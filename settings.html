@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Save Data - Maathu Fitness</title>
+
+<style>
+:root{
+  --bg:#eef3f8;
+  --card:#ffffffcc;
+  --border:#d7e0ea;
+  --accent:#007bff;
+  --accent2:#00b894;
+  --text:#1c1c1c;
+}
+
+body{
+  margin:0;
+  font-family:'Poppins',Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+*,button,a{transition:0.25s;}
+
+header{
+  height:60px; display:flex; align-items:center; justify-content:center;
+  font-size:19px; font-weight:700;
+  position:fixed; top:0; left:0; right:0;
+  background:blue; color:white;
+  z-index:10;
+}
+.menu-btn{
+  position:absolute; left:14px; font-size:26px; background:none; border:none; cursor:pointer; color:white;
+}
+
+.sidebar{
+  width:250px; background:#ffffffee; position:fixed; top:0; bottom:0; left:-260px; 
+  padding-top:75px; border-right:1px solid var(--border); transition:.35s;
+  backdrop-filter:blur(10px);
+  z-index:20;
+}
+.sidebar.open{left:0;}
+.sidebar a{
+  display:flex; align-items:center; padding:16px 22px; font-size:17px; 
+  text-decoration:none; color:var(--text); border-bottom:1px solid #f1f4f6;
+}
+.sidebar a:hover{background:#f8fffd; color:var(--accent); padding-left:28px;}
+
+.main{
+  position:absolute; top:65px; bottom:65px; left:0; right:0;
+  overflow-y:auto; padding:18px;
+}
+
+.card{
+  background:white; padding:15px; border-radius:12px; margin-bottom:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+input,select{
+  width:94%; padding:12px; margin:8px 0; border-radius:10px;
+  border:1px solid var(--border); font-size:14px;
+}
+
+.status-box{display:flex; justify-content:space-between; margin-top:5px;}
+.status-box button{
+  width:32%; padding:10px; font-size:15px; font-weight:700; border:none; border-radius:8px; cursor:pointer;
+}
+.yes{background:#00b894;color:white;}
+.medium{background:#f1c40f;color:black;}
+.no{background:#ff4757;color:white;}
+
+.save-btn{
+  width:100%; padding:12px; background:var(--accent2);
+  color:white; font-weight:700; border:none; border-radius:10px; font-size:15px; cursor:pointer;
+  margin-top:10px;
+}
+
+.bottom{
+  height:60px; position:fixed; bottom:0; left:0; right:0; display:flex;
+  justify-content:space-around; align-items:center; background:#ffffffcc; border-top:1px solid var(--border);
+}
+.bottom button{
+  background:none; border:none; font-size:13px; display:flex; flex-direction:column; align-items:center; opacity:.6; cursor:pointer; font-weight:600;
+}
+.bottom button span{font-size:22px;}
+
+.overlay{
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  z-index:15;
+}
+
+.overlay.show{
+  display:block;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  📥 Save Fitness Data
+</header>
+
+<div id="sidebar" class="sidebar">
+  <a href="index.html">🏠 Dashboard</a>
+  <a href="workouts.html">🔥 Workouts</a>
+  <a href="diet.html">🥗 Diet Plans</a>
+  <a href="fit tools.html">📋 Fit Tools</a>
+  <a href="habit traker.html">♾️ Habit Traker</a>
+  <a href="profile.html">👤 Profile</a>
+  <a href="settings.html">⚙️ Settings</a>
+</div>
+
+<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+<div class="main">
+
+  <div class="card">
+    <h3>👤 Profile Details</h3>
+
+    <input type="text" id="name" placeholder="Name">
+    <input type="number" id="age" placeholder="Age">
+    <select id="gender">
+      <option value="">Select Gender</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+    <input type="number" id="weight" placeholder="Weight (kg)">
+    <input type="number" id="height" placeholder="Height (cm)">
+
+    <select id="goal">
+      <option>Goal</option>
+      <option>Weight Loss</option>
+      <option>Muscle Gain</option>
+      <option>Fitness</option>
+    </select>
+
+    <select id="workout">
+      <option>Workout Level</option>
+      <option>Beginner</option>
+      <option>Intermediate</option>
+      <option>Advanced</option>
+    </select>
+
+    <select id="diet">
+      <option>Diet Type</option>
+      <option>Veg</option>
+      <option>Non-Veg</option>
+      <option>Mixed</option>
+    </select>
+    
+    <input type="number" id="calorie" placeholder="Your Calorie (kcal)">
+
+    <button class="save-btn" onclick="saveProfile()">💾 Save / Edit Profile</button>
+  </div>
+
+  <div class="card">
+    <h3>🏋️ Today Workout?</h3>
+
+    <div class="status-box">
+      <button class="yes" onclick="saveToday('✅ Done')">✅</button>
+      <button class="medium" onclick="saveToday('🟡 Medium')">🟡</button>
+      <button class="no" onclick="saveToday('❌ Missed')">❌</button>
+    </div>
+
+    <button class="save-btn" onclick="saveTodayStatus()">💾 Save Today</button>
+  </div>
+
+</div>
+
+<div class="bottom">
+  <button onclick="location.href='index.html'"><span>🏠</span>Home</button>
+  <button onclick="location.href='workouts.html'"><span>🔥</span>Workout</button>
+  <button onclick="location.href='diet.html'"><span>🥗</span>Diet</button>
+  <button onclick="location.href='profile.html'"><span>👤</span>Profile</button>
+</div>
+
+<script>
+function toggleMenu(){
+  sidebar.classList.toggle("open");
+  overlay.classList.toggle("show");
+}
+
+// ✅ Bind input elements
+const inputName = document.getElementById("name");
+const inputAge = document.getElementById("age");
+const inputGender = document.getElementById("gender");
+const inputWeight = document.getElementById("weight");
+const inputHeight = document.getElementById("height");
+const inputGoal = document.getElementById("goal");
+const inputWorkout = document.getElementById("workout");
+const inputDiet = document.getElementById("diet");
+const inputCalorie = document.getElementById("calorie");
+
+// ✅ Load saved profile (இந்த பகுதி திருத்தப்பட்டுள்ளது)
+window.onload = () => {
+  inputName.value = localStorage.getItem("name") || "";
+  inputAge.value = localStorage.getItem("age") || "";
+  inputGender.value = localStorage.getItem("gender") || "";
+  inputWeight.value = localStorage.getItem("weight") || "";
+  inputHeight.value = localStorage.getItem("height") || "";
+  inputGoal.value = localStorage.getItem("goal") || "Goal";
+  inputWorkout.value = localStorage.getItem("workout-level") || "Workout Level";
+  inputDiet.value = localStorage.getItem("diet") || "Diet Type";
+  
+  // ✅ இங்கே Calorie மதிப்பை localStorage-லிருந்து எடுத்து, அதை உள்ளீட்டுப் புலத்தில் நிரப்புகிறது.
+  inputCalorie.value = localStorage.getItem("calorie") || ""; 
+};
+
+// ✅ Save Profile
+function saveProfile(){
+  localStorage.setItem("name", inputName.value);
+  localStorage.setItem("age", inputAge.value);
+  localStorage.setItem("gender", inputGender.value);
+  localStorage.setItem("weight", inputWeight.value);
+  localStorage.setItem("height", inputHeight.value);
+  localStorage.setItem("goal", inputGoal.value);
+  localStorage.setItem("workout-level", inputWorkout.value);
+  localStorage.setItem("diet", inputDiet.value);
+  // localStorage.setItem("diet", inputDiet.value); // இது தேவையற்ற நகல்
+  localStorage.setItem("calorie", inputCalorie.value);
+  alert("✅ Profile Saved!");
+}
+
+// ✅ Set Today workout temp
+let todayStatus = "";
+
+function saveToday(val){
+  todayStatus = val;
+}
+
+// ✅ Final Save Today
+function saveTodayStatus(){
+  if(todayStatus === ""){ 
+    alert("Select today's workout first!"); 
+    return; 
+  }
+
+  let date = new Date();
+  let today = date.toISOString().split('T')[0];
+  let day = date.getDate();  // 1,2,3....
+
+  // Save single status
+  localStorage.setItem("todayWorkout", todayStatus);
+  localStorage.setItem("workout_"+today, todayStatus);
+
+  // Get existing arrays
+  let doneDays = JSON.parse(localStorage.getItem("doneWorkoutDays")) || [];
+  let mediumDays = JSON.parse(localStorage.getItem("mediumWorkoutDays")) || [];
+
+  // Remove day if previously saved to avoid duplicate
+  doneDays = doneDays.filter(d => d !== day);
+  mediumDays = mediumDays.filter(d => d !== day);
+
+  // Push to correct array
+  if(todayStatus.includes("✅")){
+    doneDays.push(day);
+  } 
+  else if(todayStatus.includes("🟡")){
+    mediumDays.push(day);
+  }
+
+  // Save arrays back
+  localStorage.setItem("doneWorkoutDays", JSON.stringify(doneDays));
+  localStorage.setItem("mediumWorkoutDays", JSON.stringify(mediumDays));
+
+  alert("🔥 Workout Saved: " + todayStatus);
+}
+
+// ✅ Monthly Reset System (Auto Archive & Reset)
+const currentDate = new Date();
+const currentMonth = currentDate.getMonth();
+const currentYear = currentDate.getFullYear();
+
+const savedMonth = localStorage.getItem("currentMonth");
+const savedYear = localStorage.getItem("currentYear");
+
+// First time setup
+if (savedMonth == null || savedYear == null) {
+    localStorage.setItem("currentMonth", currentMonth);
+    localStorage.setItem("currentYear", currentYear);
+} 
+// If month or year changed, archive and reset
+else if (parseInt(savedMonth) !== currentMonth || parseInt(savedYear) !== currentYear) {
+    const archiveKeyDone = `history_done_${savedYear}_${savedMonth}`;
+    const archiveKeyMedium = `history_medium_${savedYear}_${savedMonth}`;
+    
+    // Save previous month data
+    localStorage.setItem(archiveKeyDone, localStorage.getItem("doneWorkoutDays"));
+    localStorage.setItem(archiveKeyMedium, localStorage.getItem("mediumWorkoutDays"));
+
+    // Reset current data
+    localStorage.setItem("doneWorkoutDays", JSON.stringify([]));
+    localStorage.setItem("mediumWorkoutDays", JSON.stringify([]));
+
+    // Update to current month
+    localStorage.setItem("currentMonth", currentMonth);
+    localStorage.setItem("currentYear", currentYear);
+
+    console.log("✅ New Month Started! Previous month data archived successfully.");
+}
+
+
+</script>
+
+</body>
+</html>
